@@ -15,7 +15,7 @@ $tabSN[1]['name'] = 'telegram';
 $tabSN[1]['class_img'] = 'tgme_page_photo_image';
 $tabSN[1]['url'] = 'https://t.me/';
 $folderGIF = 'GIF/';
-
+$error = false;
 if (!isset ($_GET['n']) OR empty($_GET['n']) OR !is_numeric($_GET['n']) OR $_GET['n']>1){
 //choose ID of Social Network 
 // 0 : twitter
@@ -25,12 +25,10 @@ if (!isset ($_GET['n']) OR empty($_GET['n']) OR !is_numeric($_GET['n']) OR $_GET
 	$idSN = $_GET['n'];
 }
 
-
-
-function getWords($sentence){
-	$sentencePlus = str_replace(' ','+',$sentence);
-	$tabWords = explode('+',$sentencePlus);
-	return $tabWords;
+function getWords($sentenceBrut){
+	$sentencePlus = str_replace(' ','+',$sentenceBrut);
+	$tabWordsBrut = explode('+',$sentencePlus);
+	return $tabWordsBrut;
 }
 
 function pre($var){
@@ -38,6 +36,22 @@ function pre($var){
 	var_dump($var);
 	echo "</pre>";
 }
+
+function printOut($urlGIF,$idSN,$tabSN){
+	$out = 
+		'<html>
+			<header>
+			</header>
+			<body>
+				<div align="center">
+					<br /><a href="'.$urlGIF.'">Download GIF (right click : Save target as...)</a>
+					<br /><br /><img src="'.$urlGIF.'">
+					<br /><br />Images from '.$tabSN[$idSN]['name'].'
+					</div>
+			</body>
+		</html>';
+		return $out;
+} 
 
 $nameGIF = $folderGIF.md5($_GET['s'].$_GET['n']).".gif";
 $startUrl = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ;
@@ -50,26 +64,28 @@ if (!file_exists($nameGIF)){
 	for ($i=0;$i<$nbWords;$i++){
 		// Create DOM from URL or file
 		$url = $tabSN[$idSN]['url'].$resTabWords[$i];
-		$html = file_get_html($url);
-		foreach($html->find('img.'.$tabSN[$idSN]['class_img']) as $element){
-			$frames[] = file_get_contents($element->src);
+		if (!empty($resTabWords[$i])){
+			$html = file_get_html($url);
+			if ($html){
+				foreach($html->find('img.'.$tabSN[$idSN]['class_img']) as $element){
+					$frames[] = file_get_contents($element->src);
+				}
+			}
 		}
 	}
 	//Create GIF
-	include ('create_gif.php');
+	$nbFrames = count($frames);
+	if ($nbFrames > 1){
+		include ('create_gif.php');
+		$error = false;
+	}else{
+		echo "Error : Only one frame";
+		$error = true;
+	}
+	
 }
+if (!$error) echo printOut($urlGIF,$idSN,$tabSN);
 
-echo 
-'<html>
-	<header>
-	</header>
-	<body>
-		<div align="center">
-			<br /><a href="'.$urlGIF.'">Télécharger le GIF (clic droit : Enregistrer la cible du lien sous...)</a>
-			<br /><br /><img src="'.$urlGIF.'">
-			</div>
-	</body>
-</html>';
 
 
 

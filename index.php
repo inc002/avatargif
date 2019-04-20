@@ -98,7 +98,7 @@ if (!file_exists($nameGIF)){
 		include ('create_gif.php');
 		$error = false;
 	}elseif(isset($_GET['s'])){
-		$error = "Error : No GIF available";
+		$error = 'Error : No GIF available<br /><br /><a href="#" onclick="window.history.back();">Back</a>';
 	}
 	
 }

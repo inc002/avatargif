@@ -39,31 +39,36 @@ function pre($var){
 	echo "</pre>";
 }
 
+$nameGIF = md5($_GET['s'].$_GET['n']).".gif";
+$startUrl = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ;
+$urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/'.$nameGIF;
 
-//Get url of avatar pictures
-$resTabWords = getWords($_GET['s']);
-$nbWords = count($resTabWords);
-
-for ($i=0;$i<$nbWords;$i++){
-	// Create DOM from URL or file
-	$url = $tabSN[$idSN]['url'].$resTabWords[$i];
-	$html = file_get_html($url);
-	foreach($html->find('img.'.$tabSN[$idSN]['class_img']) as $element){
-		$frames[] = file_get_contents($element->src);
+if (!file_exists($nameGIF)){
+	//Get url of avatar pictures
+	$resTabWords = getWords($_GET['s']);
+	$nbWords = count($resTabWords);
+	for ($i=0;$i<$nbWords;$i++){
+		// Create DOM from URL or file
+		$url = $tabSN[$idSN]['url'].$resTabWords[$i];
+		$html = file_get_html($url);
+		foreach($html->find('img.'.$tabSN[$idSN]['class_img']) as $element){
+			$frames[] = file_get_contents($element->src);
+		}
 	}
+	//Create GIF
+	include ('create_gif.php');
 }
-echo '<html>
-<header>
-</header>
-<body>
-<div align="center">';
 
-//Create GIF
-include ('create_gif.php');
-
-echo '
-</div>
-</body>
+echo 
+'<html>
+	<header>
+	</header>
+	<body>
+		<div align="center">
+			<br /><a href="'.$urlGIF.'">Télécharger le GIF (clic droit : Enregistrer la cible du lien sous...)</a>
+			<br /><br /><img src="'.$urlGIF.'">
+			</div>
+	</body>
 </html>';
 
 

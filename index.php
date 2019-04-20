@@ -15,10 +15,16 @@ $tabSN[1]['name'] = 'telegram';
 $tabSN[1]['class_img'] = 'tgme_page_photo_image';
 $tabSN[1]['url'] = 'https://t.me/';
 
+
+if (!isset ($_GET['n']) OR empty($_GET['n']) OR !is_numeric($_GET['n'])){
 //choose ID of Social Network 
 // 0 : twitter
 // 1 : telegram
-$idSN = 0;
+	$idSN = 0;
+}else{
+	$idSN = $_GET['n'];
+}
+
 
 
 function getWords($sentence){

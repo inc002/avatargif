@@ -6,9 +6,17 @@ include('resources/animGif.php');
 $durations = array(100);
 $anim = new GifCreator\AnimGif();
 $anim->create($frames, $durations);
-$gif = $anim->get();
-header("Content-type: image/gif");
-echo $gif;
+//$anim->save("animated.gif");
+//$gif = $anim->get();
+//header("Content-type: image/gif");
+
+//echo $gif;
+$nameGIF = rand()."animated.gif";
+$anim->save($nameGIF);
+$startUrl = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ;
+$urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/'.$nameGIF;
+echo '<br /><a href="'.$urlGIF.'">Télécharger le GIF (clic droit : Enregistrer la cible du lien sous...)</a>';
+echo '<br /><br /><img src="'.$urlGIF.'">';
 exit;
 
 ?>

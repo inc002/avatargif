@@ -16,7 +16,7 @@ $tabSN[1]['class_img'] = 'tgme_page_photo_image';
 $tabSN[1]['url'] = 'https://t.me/';
 
 
-if (!isset ($_GET['n']) OR empty($_GET['n']) OR !is_numeric($_GET['n'])){
+if (!isset ($_GET['n']) OR empty($_GET['n']) OR !is_numeric($_GET['n']) OR $_GET['n']>1){
 //choose ID of Social Network 
 // 0 : twitter
 // 1 : telegram
@@ -52,9 +52,20 @@ for ($i=0;$i<$nbWords;$i++){
 		$frames[] = file_get_contents($element->src);
 	}
 }
+echo '<html>
+<header>
+</header>
+<body>
+<div align="center">';
 
 //Create GIF
 include ('create_gif.php');
+
+echo '
+</div>
+</body>
+</html>';
+
 
 
 

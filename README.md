@@ -4,7 +4,7 @@ Create a GIF with the name of all your favorites person of twitter or telegram
 Usage : 
 Call index.php?s=name1 name2 name3 nameN
 
-Example : http://127.0.0.1/avatargif/?s=hello%20wonderfull%20girl
+Example : https://murcier.fr/avatargif/?s=amour%20gloire%20et%20beaute&n=1
 
 Output : 
 GIF directly in browser with 1 sec of animation delay 

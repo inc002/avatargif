@@ -41,7 +41,7 @@ function pre($var){
 
 $nameGIF = md5($_GET['s'].$_GET['n']).".gif";
 $startUrl = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ;
-$urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/'.$nameGIF;
+$urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/GIF/'.$nameGIF;
 
 if (!file_exists($nameGIF)){
 	//Get url of avatar pictures

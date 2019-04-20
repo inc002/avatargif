@@ -1,27 +1,11 @@
 <?php
-error_reporting(E_ALL);
+include('resources/simple_html_dom.php');
 
-include('simple_html_dom.php');
 
-function getWords($sentence){
-	$sentencePlus = str_replace(' ','+',$sentence);
-	$tabWords = explode('+',$sentencePlus);
-	return $tabWords;
-}
-
-function pre($var){
-	echo "<pre>";
-	var_dump($var);
-	echo "</pre>";
-}
-
-$resTabWords = getWords($_GET['s']);
-$nbWords = count($resTabWords);
+// INIT 
 
 //twitter : ProfileAvatar-image 
 //telegram : tgme_page_photo_image
-//facebook : img dans div profilePicThumb 
-
 
 $tabSN = array ();
 $tabSN[0]['name'] = 'twitter';
@@ -36,6 +20,24 @@ $tabSN[1]['url'] = 'https://t.me/';
 // 1 : telegram
 $idSN = 0;
 
+
+function getWords($sentence){
+	$sentencePlus = str_replace(' ','+',$sentence);
+	$tabWords = explode('+',$sentencePlus);
+	return $tabWords;
+}
+
+function pre($var){
+	echo "<pre>";
+	var_dump($var);
+	echo "</pre>";
+}
+
+
+//Get url of avatar pictures
+$resTabWords = getWords($_GET['s']);
+$nbWords = count($resTabWords);
+
 for ($i=0;$i<$nbWords;$i++){
 	// Create DOM from URL or file
 	$url = $tabSN[$idSN]['url'].$resTabWords[$i];
@@ -45,6 +47,7 @@ for ($i=0;$i<$nbWords;$i++){
 	}
 }
 
+//Create GIF
 include ('create_gif.php');
 
 

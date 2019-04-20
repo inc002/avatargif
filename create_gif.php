@@ -11,7 +11,7 @@ $anim->create($frames, $durations);
 //header("Content-type: image/gif");
 
 //echo $gif;
-$nameGIF = rand()."animated.gif";
+$nameGIF = time().rand().".gif";
 $anim->save($nameGIF);
 $startUrl = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ;
 $urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/'.$nameGIF;

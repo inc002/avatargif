@@ -31,7 +31,9 @@ $tabSN[1]['name'] = 'telegram';
 $tabSN[1]['class_img'] = 'tgme_page_photo_image';
 $tabSN[1]['url'] = 'https://t.me/';
 
-
+//choose ID of Social Network 
+// 0 : twitter
+// 1 : telegram
 $idSN = 0;
 
 for ($i=0;$i<$nbWords;$i++){

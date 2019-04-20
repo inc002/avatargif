@@ -1,5 +1,5 @@
 <?php
-include('animGif.php');
+include('resources/animGif.php');
 // Use an array containing file paths, resource vars (initialized with imagecreatefromXXX), 
 // image URLs or binary image data.
 // Optionally: set different durations (in 1/100s units) for each frame

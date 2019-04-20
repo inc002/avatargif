@@ -14,7 +14,7 @@ $tabSN[0]['url'] = 'https://twitter.com/';
 $tabSN[1]['name'] = 'telegram';
 $tabSN[1]['class_img'] = 'tgme_page_photo_image';
 $tabSN[1]['url'] = 'https://t.me/';
-
+$folderGIF = 'GIF/';
 
 if (!isset ($_GET['n']) OR empty($_GET['n']) OR !is_numeric($_GET['n']) OR $_GET['n']>1){
 //choose ID of Social Network 
@@ -39,9 +39,9 @@ function pre($var){
 	echo "</pre>";
 }
 
-$nameGIF = md5($_GET['s'].$_GET['n']).".gif";
+$nameGIF = $folderGIF.md5($_GET['s'].$_GET['n']).".gif";
 $startUrl = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ;
-$urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/GIF/'.$nameGIF;
+$urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/'.$nameGIF;
 
 if (!file_exists($nameGIF)){
 	//Get url of avatar pictures

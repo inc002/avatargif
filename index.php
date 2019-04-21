@@ -73,24 +73,33 @@ function randomGIF($tabName){
 //pre(randomGIF(getTop50TwitterAccount()));
 
 function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error){
-	if (empty($listAccount)){
+	if (empty($listAccount)){	
 		$account = explode(' ',$s);
-		for ($i=0;$i<count($account);$i++){
-			$listAccount .= '<a href="'.$tabSN[$idSN]['url'].$account[$i].'">@'.$account[$i].'</a> ';
-		}
+	}else{
+		$account = $listAccount;
+	}
+	$listAccountAt = '';
+	for ($i=0;$i<count($account);$i++){
+		$listAccountUrl .= '<a href="'.$tabSN[$idSN]['url'].$account[$i].'">@'.$account[$i].'</a> ';
+		$listAccountAt .= '@'.$account[$i].' ';
+	}
 		//
 		//$listAccount = '@'.$listAccount;
-	}
+	$url = $urlGIF;
+	$text= 'This GIF has been generated with #PP of '.$listAccountAt.'from '.$tabSN[$idSN]['name'];
+	$shareTwitter = '<a href="https://twitter.com/intent/tweet?url='.urlencode($url).'&text='.urlencode($text).'&via=avatargif">Share on twitter</a>';
+	
 	$display = '	<br /><a href="'.$urlGIF.'">Download GIF (right click : Save target as...)</a>
 					<br /><br /><img src="'.$urlGIF.'">
 					<br /><br />Images from '.$tabSN[$idSN]['name'].
-					'<br /><br />Avatar of : '.$listAccount.'&nbsp;
-					<br /><br /><a href="#" onclick="window.history.back();">Back</a>';
+					'<br /><br />Avatar of : '.$listAccountUrl.'&nbsp;
+					<br /><br />'.$shareTwitter.'
+					<br /><br /><a href="#" onclick="window.history.back();">Back</a>&nbsp;<a href="index.php">Home</a>';
 	
 	if (empty($s) or !isset($s)){
 		$display = '
 		<h1>Create a GIF with avatars of social network people</h1>
-		<h3>Just write some nicknames from social network, separated by spaces</h3>
+		<h3>Just write some nicknames from social network, separated by space</h3>
 		<form><input type="text" name="s" id="s"><br />
 		<br/>
 		<input type="radio" name="n" id="n0" value="0" checked>
@@ -98,7 +107,7 @@ function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error){
 		<input type="radio" name="n" id="n1" value="1">
 		<label for="s1">Telegram</label>
 		<input type="radio" name="n" id="n2" value="2">
-		<label for="s1">Instagram</label>
+		<label for="s1">Instagram (slow...)</label>
 		<br />
 		<br />
 		<input type="submit"></form>
@@ -137,7 +146,7 @@ if (!file_exists($nameGIF)){
 	//Get url of avatar pictures
 	$resTabWords = getWords($_GET['s']);
 	$nbWords = count($resTabWords);
-	$listAccount = '';
+	$listAccount = array();
 	for ($i=0;$i<$nbWords;$i++){
 		// Create DOM from URL or file
 		$url = $tabSN[$idSN]['url'].$resTabWords[$i].'';
@@ -145,11 +154,11 @@ if (!file_exists($nameGIF)){
 			$html = file_get_html($url);
 			if ($html){
 				$resTabWords[$i] = str_replace('@','',$resTabWords[$i]);
-				$listAccount .= '<a href="'.$url.'">@'.$resTabWords[$i].'</a> ';
+				$listAccount[] = $resTabWords[$i];
 				if ($idSN == 2){
 					//meta property="og:image"
 					foreach($html->find('meta[property=og:image]') as $element){
-						$frames[] = $element->content;
+						$frames[] = file_get_contents($element->content);
 					}
 				}else{
 					foreach($html->find('img.'.$tabSN[$idSN]['class_img']) as $element){
@@ -160,6 +169,7 @@ if (!file_exists($nameGIF)){
 		}
 	}
 	//Create GIF
+	//pre($listAccount); 
 	$nbFrames = count($frames);
 	if ($nbFrames > 1){
 		include ('create_gif.php');

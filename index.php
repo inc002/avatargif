@@ -1,7 +1,7 @@
 <?php
-/*ini_set('display_errors', 1);
+ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);*/
+error_reporting(E_ALL);
 include('resources/simple_html_dom.php');
 include('functions.inc.php');
 
@@ -44,11 +44,7 @@ function getWords($sentenceBrut){
 	return $tabWordsBrut;
 }
 
-function pre($var){
-	echo "<pre>";
-	var_dump($var);
-	echo "</pre>";
-}
+
 
 function getTop50TwitterAccount(){
 	//wikitable sortable jquery-tablesorter
@@ -81,30 +77,46 @@ function randomGIF($tabName){
 
 //pre(randomGIF(getTop50TwitterAccount()));
 
-function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error,$folderGIF){
-	$lastGIF = getLastGIF(scan_dir($folderGIF),$folderGIF);
+
+
+function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error,$folderGIF,$nameGIF){
+	$tabFileListGIF = readLogGIF();
+	//pre($tabFileListGIF);
+	$lastGIF = getLastGIF($tabFileListGIF);
+	
+	$tabListAccount = accountFormat($listAccount);
+	
 	if (empty($listAccount)){	
 		$account = explode(' ',$s);
 	}else{
 		$account = $listAccount;
 	}
-	$listAccountAt = '';
-	$listAccountUrl = '';
-	for ($i=0;$i<count($account);$i++){
-		$listAccountUrl .= '<a href="'.$tabSN[$idSN]['url'].$account[$i].'">@'.$account[$i].'</a> ';
-		$listAccountAt .= '@'.$account[$i].' ';
+	
+	
+	if (isset($_GET['r']) AND is_numeric($_GET['r']))	{
+		$_GET['s'] = randomGIF(getTop50TwitterAccount());
+		$_GET['n'] = $_GET['r'];
 	}
+	
+	
+	
 		//
 		//$listAccount = '@'.$listAccount;
-	$url = $urlGIF;
-	$text= 'This GIF has been generated with #PP of '.$listAccountAt.'from '.$tabSN[$idSN]['name'];
-	$shareTwitter = '<a href="https://twitter.com/intent/tweet?url='.urlencode($url).'&text='.urlencode($text).'&via=avatargif">Share on twitter</a>';
+	$text= 'This GIF has been generated with #PP of '.$tabListAccount['at'].'from '.$tabSN[$idSN]['name'];
+	$shareTwitter = '<a href="https://twitter.com/intent/tweet?url='.urlencode($urlGIF).'&text='.urlencode($text).'&via=avatargif">Share on twitter</a>';
+	$shareFacebook = '<a href="https://www.facebook.com/sharer/sharer.php?u='.urlencode($urlGIF).'">Share on facebook</a>';
+	/*
+	 * <div class="fb-share-button" data-href="https://murcier.fr/avatargif/GIF/330cf88fbca6c47efeff83bff0baf3a1-twitter-.gif" 
+	 * data-layout="button_count" data-size="small"><a target="_blank" 
+	 * href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fmurcier.fr%2Favatargif%2FGIF%2F330cf88fbca6c47efeff83bff0baf3a1-twitter-.gif&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Partager</a></div>
+	 * 
+	 * */
 	
 	$display = '	<br /><a href="'.$urlGIF.'">Download GIF (right click : Save target as...)</a>
 					<br /><br /><img src="'.$urlGIF.'">
 					<br /><br />Images from '.$tabSN[$idSN]['name'].
-					'<br /><br />Avatar of : '.$listAccountUrl.'&nbsp;
-					<br /><br />'.$shareTwitter.'
+					'<br /><br />Avatar of : '.$tabListAccount['url'].'&nbsp;
+					<br /><br />'.$shareTwitter.' '.$shareFacebook.'
 					<br /><br /><a href="#" onclick="window.history.back();">Back</a>&nbsp;<a href="index.php">Home</a>';
 	
 	if (empty($s) or !isset($s)){
@@ -148,15 +160,13 @@ function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error,$folderGIF){
 	
 		return $out;
 } 
-if (isset($_GET['r']) AND is_numeric($_GET['r']))	{
-	$_GET['s'] = randomGIF(getTop50TwitterAccount());
-	$_GET['n'] = $_GET['r'];
-	
-}
 
 $nameGIF = $folderGIF.md5($_GET['s'].$_GET['n'])."-".$tabSN[$_GET['n']]['name']."-.gif";
 $startUrl = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ;
 $urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/'.$nameGIF;
+	
+
+
 
 if (!file_exists($nameGIF)){
 	//Get url of avatar pictures
@@ -198,13 +208,17 @@ if (!file_exists($nameGIF)){
 	$nbFrames = count($frames);
 	if ($nbFrames > 1){
 		include ('create_gif.php');
+		//backup pp used for this GIF in file
+		$tabAccount = accountFormat($listAccount);
+		writeLogGIF($tabAccount['at']."| ".$nameGIF);
 		$error = false;
+		
 	}elseif(isset($_GET['s'])){
 		$error = 'Error : No GIF available<br /><br /><a href="#" onclick="window.history.back();">Back</a>';
 	}
 	
 }
-echo printOut($urlGIF,$idSN,$tabSN,$_GET['s'],$listAccount,$error,$folderGIF);
+echo printOut($urlGIF,$idSN,$tabSN,$_GET['s'],$listAccount,$error,$folderGIF,$nameGIF);
 
 
 

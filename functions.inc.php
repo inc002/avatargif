@@ -1,5 +1,35 @@
 <?php
-function scan_dir($folderGIF) {
+
+function pre($var){
+	echo "<pre>";
+	var_dump($var);
+	echo "</pre>";
+}
+
+function writeLogGIF($txt,$filename='logGIF.txt'){
+	$file = fopen($filename, "a") or die("Unable to open file!");
+	fwrite($file, $txt."\n");
+	fclose($file);
+}
+
+function readLogGIF($filename='logGIF.txt'){
+	$file = fopen($filename, "r") or die("Unable to open file!");
+	while(!feof($file)){
+		$tabFile[] = fgets($file);
+	}
+	fclose($file);
+	return $tabFile;
+}
+
+function accountFormat($account){
+	for ($i=0;$i<count($account);$i++){
+		$listAccount['url'] .= '<a href="'.$tabSN[$idSN]['url'].$account[$i].'">@'.$account[$i].'</a> ';
+		$listAccount['at'].= '@'.$account[$i].' ';
+	}
+	return $listAccount;
+}
+
+/*function scan_dir($folderGIF) {
 	$ignored = array('.', '..', '.svn', '.htaccess');
 	$files = array();
 	$i=0;
@@ -11,23 +41,28 @@ function scan_dir($folderGIF) {
 	arsort($files);
 	$files = array_keys($files);
 	return ($files) ? $files : false;
-}
+}*/
 
 
-function getLastGIF($files,$folderGIF,$limit=50){
+function getLastGIF($tabLines,$limit=50){
 	$returnGIF = "<h3>Last generated GIF with <3 by you</h3>";
-	for($i=0;$i<count($files);$i++){
-		$tabFileProp = stat($folderGIF.$files[$i]);
-		$tabOrigin = explode('-',$files[$i]);
+	$tabFileRecent = array_reverse($tabLines);
+	for($i=0;$i<count($tabFileRecent);$i++){
+		$tabLines=explode('|',$tabFileRecent[$i]);
+		$tabFileProp = stat(trim($tabLines[1]));
+		$tabOrigin = explode('-',$tabLines[1]);
 		$origin = '';
 		if (isset($tabOrigin[1])){
-			$origin = 'from '.$tabOrigin[1]." ";
+			$origin = '<br />'.$tabLines[0].'<br />from '.$tabOrigin[1]."<hr />";
+			$returnGIF .= '<div><img width="128" height="128" src="'.$tabLines[1].'"><br /><a href="'.$tabLines[1].'" target="_blank">'.date ("d.m.Y - H:i:s", $tabFileProp['mtime']).' '.$origin.'</a></div>';
 		}
-		$returnGIF .= '<div><img width="128" height="128" src="GIF/'.$files[$i].'"><br /><a href="GIF/'.$files[$i].'" target="_blank">Creation date : '.date ("d.m.Y à H:i:s", $tabFileProp['mtime']).' '.$origin.'</a></div>';
 		if ($i==$limit){
 			break;
 		}
 	}
 	return $returnGIF;
 }
+
+
+
 ?>

@@ -1,7 +1,7 @@
 <?php
-/*ini_set('display_errors', 1);
+ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);*/
+error_reporting(E_ALL);
 include('resources/simple_html_dom.php');
 include('functions.inc.php');
 
@@ -84,7 +84,7 @@ function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error,$folderGIF,$nameGI
 	//pre($tabFileListGIF);
 	$lastGIF = getLastGIF($tabFileListGIF);
 	
-	$tabListAccount = accountFormat($listAccount);
+	$tabListAccount = accountFormat($listAccount,$tabSN,$idSN);
 	
 	if (empty($listAccount)){	
 		$account = explode(' ',$s);
@@ -215,9 +215,10 @@ if (!file_exists($nameGIF)){
 	}
 	
 }
-if (isset($nameGIF) AND !empty($listAccount)){
+pre($idSN);
+if (isset($nameGIF) AND !empty($listAccount) AND isset($tabSN)){
 	//backup pp used for this GIF in file
-	$tabAccount = accountFormat($listAccount);
+	$tabAccount = accountFormat($listAccount,$tabSN,$idSN);
 	writeLogGIF($tabAccount['at']."| ".$nameGIF);
 }
 echo printOut($urlGIF,$idSN,$tabSN,$_GET['s'],$listAccount,$error,$folderGIF,$nameGIF);

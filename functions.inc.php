@@ -21,7 +21,7 @@ function readLogGIF($filename='logGIF.txt'){
 	return $tabFile;
 }
 
-function accountFormat($account){
+function accountFormat($account,$tabSN,$idSN){
 	for ($i=0;$i<count($account);$i++){
 		$listAccount['url'] .= '<a href="'.$tabSN[$idSN]['url'].$account[$i].'">@'.$account[$i].'</a> ';
 		$listAccount['at'].= '@'.$account[$i].' ';

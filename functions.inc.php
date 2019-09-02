@@ -1,5 +1,5 @@
 <?php
-function scan_dir($folderGIF,$limit=50) {
+function scan_dir($folderGIF) {
 	$ignored = array('.', '..', '.svn', '.htaccess');
 	$files = array();
 	$i=0;
@@ -7,9 +7,6 @@ function scan_dir($folderGIF,$limit=50) {
 		if (in_array($file, $ignored)) continue;
 		$files[$file] = filemtime($folderGIF.$file);
 		$i++;
-		if ($i==$limit){
-			break;
-		}
 	}
 	arsort($files);
 	$files = array_keys($files);
@@ -17,7 +14,7 @@ function scan_dir($folderGIF,$limit=50) {
 }
 
 
-function getLastGIF($files,$folderGIF){
+function getLastGIF($files,$folderGIF,$limit=50){
 	$returnGIF = "<h3>Last GIF generated with love by you</h3>";
 	for($i=0;$i<count($files);$i++){
 		$tabFileProp = stat($folderGIF.$files[$i]);
@@ -27,6 +24,9 @@ function getLastGIF($files,$folderGIF){
 			$origin = 'from '.$tabOrigin[1]." ";
 		}
 		$returnGIF .= '<div><img width="128" height="128" src="GIF/'.$files[$i].'"><br /><a href="GIF/'.$files[$i].'">Creation date : '.date ("d.m.Y à H:i:s", $tabFileProp['mtime']).' '.$origin.'</a></div>';
+		if ($i==$limit){
+			break;
+		}
 	}
 	return $returnGIF;
 }

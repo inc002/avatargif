@@ -1,12 +1,16 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 include('resources/simple_html_dom.php');
-
+include('functions.inc.php');
 
 // INIT 
 
 //twitter : ProfileAvatar-image 
 //telegram : tgme_page_photo_image
 //instagram : _6q-tv
+//facebook : _1glk _6phc img
 
 $tabSN = array ();
 $tabSN[0]['name'] = 'twitter';
@@ -18,9 +22,14 @@ $tabSN[1]['url'] = 'https://t.me/';
 $tabSN[2]['name'] = 'instagram';
 $tabSN[2]['class_img'] = '_6q-tv';
 $tabSN[2]['url'] = 'https://www.instagram.com/';
+$tabSN[3]['name'] = 'facebook';
+$tabSN[3]['class_img'] = '_1glk _6phc img';
+$tabSN[3]['url'] = 'https://www.facebook.com/public/';
+
+
 $folderGIF = 'GIF/';
 $error = false;
-if (!isset ($_GET['n']) OR empty($_GET['n']) OR !is_numeric($_GET['n']) OR $_GET['n']>2){
+if (!isset ($_GET['n']) OR empty($_GET['n']) OR !is_numeric($_GET['n']) OR $_GET['n']>3){
 //choose ID of Social Network 
 // 0 : twitter
 // 1 : telegram
@@ -72,13 +81,15 @@ function randomGIF($tabName){
 
 //pre(randomGIF(getTop50TwitterAccount()));
 
-function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error){
+function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error,$folderGIF){
+	$lastGIF = getLastGIF(scan_dir($folderGIF),$folderGIF);
 	if (empty($listAccount)){	
 		$account = explode(' ',$s);
 	}else{
 		$account = $listAccount;
 	}
 	$listAccountAt = '';
+	$listAccountUrl = '';
 	for ($i=0;$i<count($account);$i++){
 		$listAccountUrl .= '<a href="'.$tabSN[$idSN]['url'].$account[$i].'">@'.$account[$i].'</a> ';
 		$listAccountAt .= '@'.$account[$i].' ';
@@ -108,6 +119,8 @@ function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error){
 		<label for="s1">Telegram</label>
 		<input type="radio" name="n" id="n2" value="2">
 		<label for="s1">Instagram (slow...)</label>
+		<!-- <input type="radio" name="n" id="n3" value="3">
+		<label for="s1">Facebook</label> -->
 		<br />
 		<br />
 		<input type="submit"></form>
@@ -127,6 +140,9 @@ function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error){
 				<div align="center">
 				'.$display.'
 				</div>
+				<div align="center">
+				'.$lastGIF.'
+				</div>
 			</body>
 		</html>';
 	
@@ -138,7 +154,7 @@ if (isset($_GET['r']) AND is_numeric($_GET['r']))	{
 	
 }
 
-$nameGIF = $folderGIF.md5($_GET['s'].$_GET['n']).".gif";
+$nameGIF = $folderGIF.md5($_GET['s'].$_GET['n'])."-".$tabSN[$_GET['n']]['name']."-.gif";
 $startUrl = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ;
 $urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/'.$nameGIF;
 
@@ -150,8 +166,10 @@ if (!file_exists($nameGIF)){
 	for ($i=0;$i<$nbWords;$i++){
 		// Create DOM from URL or file
 		$url = $tabSN[$idSN]['url'].$resTabWords[$i].'';
+		//pre($url);
 		if (!empty($resTabWords[$i])){
 			$html = file_get_html($url);
+			//pre($html);
 			if ($html){
 				$resTabWords[$i] = str_replace('@','',$resTabWords[$i]);
 				$listAccount[] = $resTabWords[$i];
@@ -160,6 +178,13 @@ if (!file_exists($nameGIF)){
 					foreach($html->find('meta[property=og:image]') as $element){
 						$frames[] = file_get_contents($element->content);
 					}
+				}
+				//facebook
+				if ($idSN == 3){
+					foreach($html->find('div.clearfix') as $element){
+						$frames[] = file_get_contents($element->href);
+					}
+					pre($frames);
 				}else{
 					foreach($html->find('img.'.$tabSN[$idSN]['class_img']) as $element){
 						$frames[] = file_get_contents($element->src);
@@ -179,7 +204,7 @@ if (!file_exists($nameGIF)){
 	}
 	
 }
-echo printOut($urlGIF,$idSN,$tabSN,$_GET['s'],$listAccount,$error);
+echo printOut($urlGIF,$idSN,$tabSN,$_GET['s'],$listAccount,$error,$folderGIF);
 
 
 

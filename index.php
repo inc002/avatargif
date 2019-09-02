@@ -215,7 +215,7 @@ if (!file_exists($nameGIF)){
 	}
 	
 }
-if (isset($nameGIF) AND isset($listAccount)){
+if (isset($nameGIF) AND !empty($listAccount)){
 	//backup pp used for this GIF in file
 	$tabAccount = accountFormat($listAccount);
 	writeLogGIF($tabAccount['at']."| ".$nameGIF);

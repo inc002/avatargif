@@ -111,7 +111,7 @@ function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error,$folderGIF){
 		$display = '
 		<h1>Create a GIF with avatars of social network people</h1>
 		<h3>Just write some nicknames from social network, separated by space</h3>
-		<form><input type="text" name="s" id="s" size="30" value="justin bieber trudeau shakira"><br />
+		<form><input type="text" name="s" id="s" size="30" placeholder="madonna bieber trudeau shakira"><br />
 		<br/>
 		<input type="radio" name="n" id="n0" value="0" checked>
 		<label for="s1">Twitter</label>	

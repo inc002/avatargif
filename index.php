@@ -208,15 +208,17 @@ if (!file_exists($nameGIF)){
 	$nbFrames = count($frames);
 	if ($nbFrames > 1){
 		include ('create_gif.php');
-		//backup pp used for this GIF in file
-		$tabAccount = accountFormat($listAccount);
-		writeLogGIF($tabAccount['at']."| ".$nameGIF);
 		$error = false;
 		
 	}elseif(isset($_GET['s'])){
 		$error = 'Error : No GIF available<br /><br /><a href="#" onclick="window.history.back();">Back</a>';
 	}
 	
+}
+if (isset($nameGIF) AND isset($listAccount)){
+	//backup pp used for this GIF in file
+	$tabAccount = accountFormat($listAccount);
+	writeLogGIF($tabAccount['at']."| ".$nameGIF);
 }
 echo printOut($urlGIF,$idSN,$tabSN,$_GET['s'],$listAccount,$error,$folderGIF,$nameGIF);
 

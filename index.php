@@ -130,6 +130,7 @@ $urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/'.$nameGIF;
 if (!file_exists($nameGIF)){
 	//Get url of avatar pictures
 	$resTabWords = getWords($_GET['s']);
+	
 	$nbWords = count($resTabWords);
 	$listAccount = array();
 	for ($i=0;$i<$nbWords;$i++){

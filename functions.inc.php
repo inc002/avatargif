@@ -66,6 +66,7 @@ function getLastGIF($tabLines,$limit=50){
 function getWords($sentenceBrut){
 	$sentencePlus = str_replace(' ','+',$sentenceBrut);
 	$tabWordsBrut = explode('+',$sentencePlus);
+	$tabWordsBrut = str_replace('@','',$tabWordsBrut);
 	return $tabWordsBrut;
 }
 

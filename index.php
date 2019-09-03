@@ -122,7 +122,7 @@ function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error,$folderGIF,$nameGI
 
 $nameGIF = $folderGIF.md5($_GET['s'].$_GET['n'])."-".$tabSN[$_GET['n']]['name']."-.gif";
 $startUrl = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' ;
-$urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/avatargif/'.$nameGIF;
+$urlGIF = $startUrl.$_SERVER['SERVER_NAME'].'/'.$nameGIF;
 	
 
 

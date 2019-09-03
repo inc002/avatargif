@@ -63,6 +63,42 @@ function getLastGIF($tabLines,$limit=50){
 	return $returnGIF;
 }
 
+function getWords($sentenceBrut){
+	$sentencePlus = str_replace(' ','+',$sentenceBrut);
+	$tabWordsBrut = explode('+',$sentencePlus);
+	return $tabWordsBrut;
+}
+
+
+
+function getTop50TwitterAccount(){
+	//wikitable sortable jquery-tablesorter
+	$url = 'https://en.wikipedia.org/wiki/List_of_most-followed_Twitter_accounts';
+	$html = file_get_html($url);
+	if ($html){
+		foreach($html->find('"table.wikitable sortable" tr') as $element){
+			foreach($element->find('td') as $cell) {
+				// push the cell's text to the array
+				if (substr($cell->plaintext,0,1)==='@'){
+					$tabTwittos[] = $cell->plaintext;
+				} 
+			}
+		}
+		return $tabTwittos;
+	}
+	return false;
+}
+
+function randomGIF($tabName){
+	$nbRandom = rand(2,8);
+	$nbTabName = count($tabName);	
+	$string = '';
+	for ($i=0;$i<$nbRandom;$i++){
+		$valRandom = rand($i,$nbTabName);
+		$string .= $tabName[$valRandom].' ';
+	}
+	return $string;
+}
 
 
 ?>

@@ -1,7 +1,7 @@
 <?php
-ini_set('display_errors', 1);
+/*ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(E_ALL);*/
 include('resources/simple_html_dom.php');
 include('functions.inc.php');
 
@@ -38,45 +38,11 @@ if (!isset ($_GET['n']) OR empty($_GET['n']) OR !is_numeric($_GET['n']) OR $_GET
 	$idSN = $_GET['n'];
 }
 
-function getWords($sentenceBrut){
-	$sentencePlus = str_replace(' ','+',$sentenceBrut);
-	$tabWordsBrut = explode('+',$sentencePlus);
-	return $tabWordsBrut;
-}
-
-
-
-function getTop50TwitterAccount(){
-	//wikitable sortable jquery-tablesorter
-	$url = 'https://en.wikipedia.org/wiki/List_of_most-followed_Twitter_accounts';
-	$html = file_get_html($url);
-	if ($html){
-		foreach($html->find('"table.wikitable sortable" tr') as $element){
-			foreach($element->find('td') as $cell) {
-				// push the cell's text to the array
-				if (substr($cell->plaintext,0,1)==='@'){
-					$tabTwittos[] = $cell->plaintext;
-				} 
-			}
-		}
-		return $tabTwittos;
-	}
-	return false;
-}
-
-function randomGIF($tabName){
-	$nbRandom = rand(2,8);
-	$nbTabName = count($tabName);	
-	$string = '';
-	for ($i=0;$i<$nbRandom;$i++){
-		$valRandom = rand($i,$nbTabName);
-		$string .= $tabName[$valRandom].' ';
-	}
-	return $string;
-}
-
 //pre(randomGIF(getTop50TwitterAccount()));
-
+if (isset($_GET['r']) AND is_numeric($_GET['r']))	{
+	$_GET['s'] = randomGIF(getTop50TwitterAccount());
+	$_GET['n'] = $_GET['r'];
+}
 
 
 function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error,$folderGIF,$nameGIF){
@@ -91,13 +57,6 @@ function printOut($urlGIF,$idSN,$tabSN,$s,$listAccount,$error,$folderGIF,$nameGI
 	}else{
 		$account = $listAccount;
 	}
-	
-	
-	if (isset($_GET['r']) AND is_numeric($_GET['r']))	{
-		$_GET['s'] = randomGIF(getTop50TwitterAccount());
-		$_GET['n'] = $_GET['r'];
-	}
-	
 	
 	
 		//
@@ -215,7 +174,7 @@ if (!file_exists($nameGIF)){
 	}
 	
 }
-pre($idSN);
+//pre($idSN);
 if (isset($nameGIF) AND !empty($listAccount) AND isset($tabSN)){
 	//backup pp used for this GIF in file
 	$tabAccount = accountFormat($listAccount,$tabSN,$idSN);
